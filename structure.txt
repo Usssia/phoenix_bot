@@ -1,0 +1,47 @@
+# Структура проекта phoenix_bot
+
+phoenix_bot/
+│
+├── main.py                  # Точка входа, запускает бота (создаёт Bot и вызывает run)
+├── bot.py                   # Основная логика перебора аккаунтов и твинов, все циклы
+├── config.py                # Все настройки, списки аккаунтов, серверов, параметры
+├── structure.txt            # (Этот файл) Оглавление и справочник по функциям
+│
+├── actions/                 # Ежедневные обязанности и вспомогательные действия
+│   ├── account_switch.py    # Смена аккаунта
+│   ├── game_enter.py        # Вход в игру
+│   ├── game_exit.py         # Выход из игры
+│   ├── daily_twin.py        # Ежедневные для твинка
+│   ├── daily_main.py        # Ежедневные для основы
+│   ├── ldplayer_start.py    # Запуск LDPlayer (эмулятора)
+│   ├── ldplayer_exit.py     # (опционально) Выход из LDPlayer и выключение ПК
+│
+├── events/                  # Акции и события (банкет и др.)
+│   ├── banquet.py           # Создание банкета (только для основы)
+│   ├── banquet_event.py     # Участие в банкете (твинки)
+│   ├── events.py            # Управление циклами событий, флаги, объединяющие функции
+│   └── README_banquet.txt   # Инструкция по банкет-боту
+│
+├── screenshots/             # Все картинки для поиска кнопок (pyautogui)
+│   # Сюда кладём все изображения, которые ищет бот
+│
+# ---
+# Справочник по функциям:
+#
+# actions/account_switch.py: switch_account(account_name)
+# actions/game_enter.py: enter_game(twin_name)
+# actions/game_exit.py: exit_game(twin_name)
+# actions/daily_twin.py: run_daily_twin_actions(twin_name)
+# actions/daily_main.py: run_daily_main_actions(main_name)
+# actions/ldplayer_start.py: start_ldplayer(ldplayer_path, wait_time)
+# actions/ldplayer_exit.py: stop_ldplayer(), shutdown_computer() (если реализовано)
+#
+# events/banquet.py: run_banquet_create(main_name)
+# events/banquet_event.py: run_banquet_event(twin_name, banquet_id)
+# events/events.py: run_banquet_cycle(repeats=1), флаги событий
+#
+# ---
+# Для добавления новых событий — создавайте новые файлы в events/
+# Для новых ежедневных действий — добавляйте функции в actions/
+#
+# Если что-то не понятно — смотрите этот файл или спрашивайте у ИИ! 
