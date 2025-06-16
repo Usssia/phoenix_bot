@@ -17,12 +17,94 @@ def wait_and_click(image_name, timeout=15, confidence=0.8):
         time.sleep(0.5)
     print(f"❌ Не найдено: {image_name}")
     return False
+    
+def if_found_then_click(image_name, x, y, confidence=0.8, timeout=5):
+    """
+    Если на экране найдена картинка — клик по заданным координатам (x, y).
+    Если нет — шаг пропускается.
+    """
+    print(f"🔍 Проверка: {image_name}")
+    start = time.time()
+    while time.time() - start < timeout:
+        if pyautogui.locateOnScreen(f"screenshots/{image_name}", confidence=confidence):
+            print(f"✅ Найдено {image_name} — кликаю по координате ({x}, {y})")
+            pyautogui.click(x, y)
+            return True
+        time.sleep(0.5)
+    print(f"❌ {image_name} не найдено — шаг пропущен")
+    return False
+def drag_left(start_x, start_y, distance=300, duration=0.5):
+    """
+    Зажимает левую кнопку мыши в точке (start_x, start_y) и тянет влево на заданное расстояние.
+    """
+    print(f"🖱️ Зажимаю мышь и веду влево от ({start_x}, {start_y}) на {distance}px")
+    pyautogui.moveTo(start_x, start_y)
+    pyautogui.mouseDown()
+    time.sleep(0.2)
+    pyautogui.moveTo(start_x - distance, start_y, duration=duration)
+    pyautogui.mouseUp()
+    print("✅ Свайп влево завершён")
+
+def drag_right(start_x, start_y, distance=300, duration=0.5):
+    """
+    Зажимает левую кнопку мыши в точке (start_x, start_y) и тянет вправо на заданное расстояние.
+    """
+    print(f"🖱️ Зажимаю мышь и веду вправо от ({start_x}, {start_y}) на {distance}px")
+    pyautogui.moveTo(start_x, start_y)
+    pyautogui.mouseDown()
+    time.sleep(0.2)
+    pyautogui.moveTo(start_x + distance, start_y, duration=duration)
+    pyautogui.mouseUp()
+    print("✅ Движение завершено")
 
 def run_daily_main_actions(main_name):
     """
-    Выполняет расширенные ежедневные действия для основы (главного аккаунта).
+    Выполняет ежедневные действия для главного аккаунта (основы)
     """
-    print(f'📅 Выполнение всех ежедневных задач для ОСНОВЫ: {main_name}')
+    print(f'📅 Начинаю ежедневные задачи для ОСНОВЫ: {main_name}')
+
+    # === Шаг 1. Проверка на открытие окна "Охота" ===
+    print("🧭 Проверка на 'Охоту'")
+    if wait_and_click("pereyti.png", timeout=5):
+        print("📌 Обнаружено окно 'Охота' — выходим из него...")
+        time.sleep(5)
+        wait_and_click("back_icon.png")
+        time.sleep(1)
+        wait_and_click("back_icon.png")
+        time.sleep(1)
+        wait_and_click("back_button.png")  # большая кнопка 'Назад'
+        time.sleep(1)
+        wait_and_click("home_icon.png")
+    else:
+        print("✅ Окно 'Охота' не появилось — продолжаем...")
+
+    # === Шаг 2. Проверка на другие возможные окна (пока заготовка) ===
+
+    # === Шаг 2. Проверка окна "Не напоминать больше сегодня" (1-я версия)
+    if_found_then_click("ne_napominat_segodnya.png", 905, 915)
+    time.sleep(1)
+    pyautogui.click(997, 564)  # Клик по экрану
+    
+    # === Шаг 3. Проверка другого варианта окна (например, на другом экране)
+    if_found_then_click("ne_napominat_segodnya_alt.png", 905, 915)
+    time.sleep(1)
+    pyautogui.click(997, 564)  # Клик по экрану
+    
+    # === Шаг 4. Проверка окна "Уведомление"
+    if_found_then_click("close_popup.png", 1191, 200)
+
+
+    # === Шаг 5. Закрытие окна "Оффлайн-доход" ===
+    def check_additional_window_4():
+        if wait_and_click("close_btn.png", timeout=5):
+            print("💰 Проверка на окно 'Оффлайн-доход'")
+        else:
+            print("Окно 'Оффлайн-доход' не появилось")
+    check_additional_window_4()
+
+
+
+    # === Далее идут основные ежедневные действия ===
 
     # 1. Временные награды
     print("🎁 Сбор временных наград")
@@ -48,37 +130,48 @@ def run_daily_main_actions(main_name):
         time.sleep(1)
         wait_and_click("back_icon.png")
 
+
+
+
     # 3. Рейтинг
     print("🎖 Рейтинг")
     if wait_and_click("reward_rank.png"):
         time.sleep(2)
         wait_and_click("rank_server_entry.png")
         time.sleep(2)
-        for tab in ["history_tab.png", "intimacy_tab.png", "achieve_tab.png", "dress_tab.png"]:
-            wait_and_click(tab)
+        wait_and_click("respect_all.png")
+        for _ in range(5):
+            pyautogui.click(997, 564)  # Клик по экрану
             time.sleep(1)
-            wait_and_click("respect_btn.png")
-            wait_and_click("gold_get.png")
         wait_and_click("back_icon.png")
         time.sleep(1)
+        
         wait_and_click("total_rank.png")
-        wait_and_click("respect_btn.png")
-        wait_and_click("gold_get.png")
-        wait_and_click("guild_tab.png")
-        wait_and_click("respect_btn.png")
-        wait_and_click("gold_get.png")
-        wait_and_click("back_icon.png")
-        wait_and_click("back_icon.png")
+        wait_and_click("respect_all.png")
+        for _ in range(2):
+            pyautogui.click(997, 564)  # Клик по экрану
+            time.sleep(1)
+        for _ in range(2):
+            wait_and_click("back_icon.png", timeout=1)
 
-    # 4. Обязанности
-    print("📘 Обязанности")
-    if wait_and_click("reward_duty.png"):
+    # 4. Питомец
+    print("Питомец")
+    if wait_and_click("close.png"):
         time.sleep(2)
-        wait_and_click("duty_skip.png")
-        wait_and_click("duty_knowledge.png")
-        wait_and_click("duty_silver.png")
-        wait_and_click("duty_fame.png")
+        wait_and_click("magasin.png")
+        wait_and_click("10.png")
+        wait_and_click("10.png")
+        wait_and_click("10.png")
+        wait_and_click("buy.png")
+        wait_and_click("magasin.png")
+        wait_and_click("tarelka.png")
+        wait_and_click("max.png")
+        wait_and_click("dobavit.png")
         wait_and_click("back_icon.png")
+        
+
+
+    
 
     # 5. Дворец
     print("🏛 Дворец")
