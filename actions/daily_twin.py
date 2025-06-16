@@ -9,7 +9,6 @@ def wait_and_click(image_name, timeout=15, confidence=0.8):
     print(f"🔍 Ожидание: {image_name}")
     start = time.time()
     while time.time() - start < timeout:
-        location = pyautogui.locateCenterOnScreen(f"assets/screenshots/{image_name}", confidence=confidence)
         location = pyautogui.locateCenterOnScreen(f"screenshots/{image_name}", confidence=confidence)
         if location:
             pyautogui.click(location)
